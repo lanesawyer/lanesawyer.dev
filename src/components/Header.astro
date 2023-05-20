@@ -1,0 +1,205 @@
+---
+const textLinks: { label: string; href: string }[] = [
+  { label: "Home", href: "/" },
+  { label: "Projects", href: "/projects" },
+  { label: "About", href: "/about" },
+  { label: "Blog", href: "https://blog.lanesawyer.dev" },
+];
+---
+
+<header>
+  <nav>
+    <span class="title">/Lane</span>
+    <ul class="nav-item">
+      {
+        textLinks.map(({ label, href }) => (
+          <li>
+            <a
+              aria-current={Astro.url.pathname === href}
+              class:list={[
+                {
+                  active:
+                    Astro.url.pathname === href ||
+                    (href !== "/" && Astro.url.pathname.startsWith(href)),
+                },
+              ]}
+              href={href}
+            >
+              {/* TODO: Whyyyy is there extra whitespace that makes centering off and the underine too long */}
+              {label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <ul class="nav-item right">
+      <li>
+        <a href="https://www.linkedin.com/in/lanesawyer/">LinkedIn</a>
+      </li>
+      <li>
+        <a href="https://mastodon.social/@lanesawyer">Mastodon</a>
+      </li>
+      <li>
+        <a href="https://app.thestorygraph.com/profile/vari">Storygraph</a>
+      </li>
+    </ul>
+    <button
+      class="color-mode__btn light--hidden"
+      aria-label="Toggle light mode"
+    >
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+    </button>
+    <button class="color-mode__btn dark--hidden" aria-label="Toggle dark mode">
+      <svg viewBox="0 0 24 24">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </button>
+  </nav>
+</header>
+<script>
+  if (
+    /* This condition checks whether the user has set a site preference for dark mode OR a OS-level preference for Dark Mode AND no site preference */
+    localStorage.getItem("color-mode") === "light" ||
+    (window.matchMedia("(prefers-color-scheme: light)").matches &&
+      !localStorage.getItem("color-mode"))
+  ) {
+    // if true, set the site to Dark Mode
+    document.documentElement.setAttribute("color-mode", "light");
+  }
+  // TODO: Type
+  const toggleColorMode = (e: any) => {
+    // Switch to Light Mode
+    if (e.currentTarget.classList.contains("light--hidden")) {
+      // Sets the custom HTML attribute
+      document.documentElement.setAttribute("color-mode", "light");
+
+      //Sets the user's preference in local storage
+      localStorage.setItem("color-mode", "light");
+      return;
+    }
+
+    /* Switch to Dark Mode
+            Sets the custom HTML attribute */
+    document.documentElement.setAttribute("color-mode", "dark");
+
+    // Sets the user's preference in local storage
+    localStorage.setItem("color-mode", "dark");
+  };
+
+  // Get the buttons in the DOM
+  const toggleColorButtons = document.querySelectorAll(".color-mode__btn");
+
+  // Set up event listeners
+  toggleColorButtons.forEach((btn) => {
+    btn.addEventListener("click", toggleColorMode);
+  });
+</script>
+
+<style>
+  header {
+    position: sticky;
+    top: 0;
+    /* From https://css.glass */
+    background: rgba(255, 255, 255, 0.17);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(6.8px);
+    -webkit-backdrop-filter: blur(6.8px);
+  }
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: auto;
+    padding: 1.5rem;
+    max-width: 120ch;
+  }
+  nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  nav li {
+    display: inline;
+    margin: var(--spacing);
+    padding: var(--spacing);
+  }
+  nav a {
+    color: var(--element1);
+    text-decoration: none;
+  }
+  nav a:hover,
+  a.active {
+    position: relative;
+    text-decoration: var(--accent-gradient) wavy underline;
+  }
+  nav a:hover::before,
+  a.active::before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    left: 0;
+    height: 5px;
+    border-radius: 2px;
+    background: var(--accent-gradient);
+    /* TODO: ANIMATE THE UNDERLINE */
+  }
+
+  .title {
+    font-size: 1.5em;
+    margin-right: calc(var(--spacing) * 4);
+  }
+  .nav-item {
+    flex: 1;
+  }
+  .center {
+    text-align: center;
+  }
+  .right {
+    text-align: right;
+  }
+
+  .color-mode__btn {
+    font-family: var(--sans);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1;
+    color: #111111;
+    color: var(--element1, #111111);
+    cursor: pointer;
+    background: none;
+    border: none;
+    border-radius: var(--radius);
+    box-shadow: var(--box-shadow);
+  }
+
+  .color-mode__btn svg {
+    width: 30px;
+    height: 30px;
+    margin-left: 7px;
+    fill: none;
+    stroke: #222222;
+    stroke: var(--element2, #222222);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.5px;
+  }
+
+  .color-mode__btn:hover svg,
+  .color-mode__btn:focus svg,
+  .color-mode__btn:focus {
+    outline: none;
+    fill: #fff7d6;
+    fill: var(--tertiary, #fff7d6);
+  }
+</style>

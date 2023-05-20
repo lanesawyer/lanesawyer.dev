@@ -1,36 +1,219 @@
 ---
 export interface Props {
-	title: string;
+  title: string;
 }
 
 const { title } = Astro.props;
 ---
 
 <!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="description" content="Astro description">
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+<html lang="en" color-mode="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Astro description" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <nav>
+      <div class="nav-item">/Lane</div>
+      <ul class="nav-item center">
+        <li>Projects</li>
+        <li>About</li>
+        <li><a href="https://blog.lanesawyer.dev">Blog</a></li>
+      </ul>
+      <ul class="nav-item right">
+        <li><a href="https://www.linkedin.com/in/lanesawyer/">LinkedIn</a></li>
+        <li><a href="https://mastodon.social/@lanesawyer">Mastodon</a></li>
+        <li>
+          <a href="https://app.thestorygraph.com/profile/vari">Storygraph</a>
+        </li>
+        <li><a href="blog.lanesawyer.dev/feed">RSS</a></li>
+        <button
+          class="color-mode__btn light--hidden"
+          aria-label="Toggle light mode"
+        >
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button
+          class="color-mode__btn dark--hidden"
+          aria-label="Toggle dark mode"
+        >
+          <svg viewBox="0 0 24 24">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </ul>
+    </nav>
+    <slot />
+  </body>
+  <script>
+    if (
+      /* This condition checks whether the user has set a site preference for dark mode OR a OS-level preference for Dark Mode AND no site preference */
+      localStorage.getItem("color-mode") === "light" ||
+      (window.matchMedia("(prefers-color-scheme: light)").matches &&
+        !localStorage.getItem("color-mode"))
+    ) {
+      // if true, set the site to Dark Mode
+      document.documentElement.setAttribute("color-mode", "light");
+    }
+    // TODO: Type
+    const toggleColorMode = (e: any) => {
+      // Switch to Light Mode
+      if (e.currentTarget.classList.contains("light--hidden")) {
+        // Sets the custom HTML attribute
+        document.documentElement.setAttribute("color-mode", "light");
+
+        //Sets the user's preference in local storage
+        localStorage.setItem("color-mode", "light");
+        return;
+      }
+
+      /* Switch to Dark Mode
+            Sets the custom HTML attribute */
+      document.documentElement.setAttribute("color-mode", "dark");
+
+      // Sets the user's preference in local storage
+      localStorage.setItem("color-mode", "dark");
+    };
+
+    // Get the buttons in the DOM
+    const toggleColorButtons = document.querySelectorAll(".color-mode__btn");
+
+    // Set up event listeners
+    toggleColorButtons.forEach((btn) => {
+      btn.addEventListener("click", toggleColorMode);
+    });
+  </script>
 </html>
 <style is:global>
-	:root {
-		--accent: 124, 58, 237;
-		--accent-gradient: linear-gradient(45deg, rgb(var(--accent)), #da62c4 30%, white 60%);
-	}
-	html {
-		font-family: system-ui, sans-serif;
-		background-color: #F6F6F6;
-	}
-	code {
-		font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
-			Bitstream Vera Sans Mono, Courier New, monospace;
-	}
+  :root {
+    --accent: 124, 58, 237;
+    --accent-gradient: linear-gradient(
+      45deg,
+      rgb(var(--accent)),
+      #da62c4 30%,
+      white 60%
+    );
+    --spacing: 4px;
+  }
+  :root[color-mode="light"] {
+    --surface1: #e6e6e6;
+    --surface2: #f2f2f2;
+    --surface3: #ffffff;
+    --element1: #111111;
+    --element2: #222222;
+    --element3: #333333;
+    --elementInverse: #eee;
+    --primary: #01408e;
+    --secondary: #3c5d5c;
+    --tertiary: #fff7d6;
+  }
+  :root[color-mode="dark"] {
+    --surface1: #262626;
+    --surface2: #333333;
+    --surface3: #404040;
+    --element1: #eeeeee;
+    --element2: #dddddd;
+    --element3: #cccccc;
+    --elementInverse: #111;
+    --primary: #8fceff;
+    --secondary: #72faca;
+    --tertiary: #eee8a9;
+  }
+
+  /* Any element with the class "light--hidden" will be hidden when the site is set to Light Mode */
+  :root[color-mode="light"] .light--hidden {
+    display: none;
+  }
+
+  /* Any element with the class "dark--hidden" will be hidden when the site is set to Dark Mode */
+  :root[color-mode="dark"] .dark--hidden {
+    display: none;
+  }
+
+  html {
+    font-family: system-ui, sans-serif;
+    background-color: var(--surface1);
+    color: var(--element1);
+  }
+  code {
+    font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
+      DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
+  }
+
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  nav li {
+    display: inline;
+    margin: var(--spacing);
+    padding: var(--spacing);
+  }
+  .nav-item {
+    flex: 1;
+  }
+  .center {
+    text-align: center;
+  }
+  .right {
+    text-align: right;
+  }
+  .color-mode__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    margin: 0 auto 1.5rem;
+    font-family: var(--sans);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1;
+    color: #111111;
+    color: var(--element1, #111111);
+    cursor: pointer;
+    background: none;
+    border: none;
+    border-radius: var(--radius);
+    box-shadow: var(--box-shadow);
+  }
+
+  .color-mode__btn svg {
+    width: 30px;
+    height: 30px;
+    margin-left: 7px;
+    fill: none;
+    stroke: #222222;
+    stroke: var(--element2, #222222);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.5px;
+  }
+
+  .color-mode__btn:hover svg,
+  .color-mode__btn:focus svg,
+  .color-mode__btn:focus {
+    outline: none;
+    fill: #fff7d6;
+    fill: var(--tertiary, #fff7d6);
+  }
 </style>

@@ -25,7 +25,7 @@ const NAV_LINKS: [NavLink; 4] = [
     },
 ];
 
-const SOCIAL_LINKS: [NavLink; 3] = [
+const SOCIAL_LINKS: [NavLink; 4] = [
     NavLink {
         label: "LinkedIn",
         path: "https://www.linkedin.com/in/lanesawyer/",
@@ -37,6 +37,10 @@ const SOCIAL_LINKS: [NavLink; 3] = [
     NavLink {
         label: "Storygraph",
         path: "https://app.thestorygraph.com/profile/vari",
+    },
+    NavLink {
+        label: "GitHub",
+        path: "https://github.com/lanesawyer",
     },
 ];
 

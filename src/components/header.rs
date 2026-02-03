@@ -1,5 +1,5 @@
-use leptos::prelude::*;
-use web_sys::window;
+use leptos::{prelude::*, server::codee::string::FromToStringCodec};
+use leptos_use::{storage::use_local_storage, use_document, use_media_query};
 
 pub struct NavLink {
     pub label: &'static str,
@@ -43,46 +43,36 @@ const SOCIAL_LINKS: [NavLink; 3] = [
 #[component]
 pub fn Header() -> impl IntoView {
     // Initialize color mode on mount
-    Effect::new(move |_| {
-        if let Some(window) = window() {
-            if let Ok(Some(storage)) = window.local_storage() {
-                let color_mode = storage.get_item("color-mode").ok().flatten();
+    let (color_mode, set_color_mode, _) =
+        use_local_storage::<String, FromToStringCodec>("color-mode");
 
-                // Check if user has set preference or if OS prefers light mode
-                let prefers_light = window
-                    .match_media("(prefers-color-scheme: light)")
-                    .ok()
-                    .flatten()
-                    .map(|media| media.matches())
-                    .unwrap_or(false);
+    let is_light_preferred: Signal<bool> = use_media_query("(prefers-color-scheme: light)");
+    let document = use_document();
 
-                if color_mode.as_deref() == Some("light") || (prefers_light && color_mode.is_none())
-                {
-                    if let Some(document) = window.document() {
-                        if let Some(html) = document.document_element() {
-                            let _ = html.set_attribute("color-mode", "light");
-                        }
-                    }
+    Effect::new({
+        // Need to clone before moving into the closure
+        let document = document.clone();
+        move |_| {
+            let color_mode = color_mode.get();
+            let document_element = document.document_element();
+
+            if color_mode == "light" || (is_light_preferred.get() && color_mode.is_empty()) {
+                if let Some(html) = document_element {
+                    let _ = html.set_attribute("color-mode", "light");
                 }
             }
         }
     });
 
     let toggle_color_mode = move |is_light_button: bool| {
-        let Some(window) = window() else { return };
-        let Some(document) = window.document() else {
-            return;
-        };
-        let Some(html) = document.document_element() else {
-            return;
-        };
-        let Ok(Some(storage)) = window.local_storage() else {
+        let document_element = document.document_element();
+        let Some(html) = document_element else {
             return;
         };
 
         let mode = if is_light_button { "light" } else { "dark" };
         let _ = html.set_attribute("color-mode", mode);
-        let _ = storage.set_item("color-mode", mode);
+        set_color_mode.update(|color_mode| *color_mode = mode.to_string());
     };
 
     view! {
@@ -116,7 +106,10 @@ pub fn Header() -> impl IntoView {
                 <button
                     class="color-mode__btn light--hidden"
                     aria-label="Toggle light mode"
-                    on:click=move |_| toggle_color_mode(true)
+                    on:click={
+                        let toggle_color_mode = toggle_color_mode.clone();
+                        move |_| toggle_color_mode(true)
+                    }
                 >
                     <svg viewBox="0 0 24 24">
                         <circle cx="12" cy="12" r="5"></circle>
@@ -133,7 +126,10 @@ pub fn Header() -> impl IntoView {
                 <button
                     class="color-mode__btn dark--hidden"
                     aria-label="Toggle dark mode"
-                    on:click=move |_| toggle_color_mode(false)
+                    on:click={
+                        let toggle_color_mode = toggle_color_mode.clone();
+                        move |_| toggle_color_mode(false)
+                    }
                 >
                     <svg viewBox="0 0 24 24">
                         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>

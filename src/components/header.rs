@@ -1,48 +1,63 @@
 use leptos::{prelude::*, server::codee::string::FromToStringCodec};
 use leptos_use::{storage::use_local_storage, use_document, use_media_query};
 
+use crate::components::icons::{
+    github::GitHub, linkedin::LinkedIn, mastodon::Mastodon, storygraph::Storygraph,
+};
+
 pub struct NavLink {
     pub label: &'static str,
     pub path: &'static str,
+    icon: Option<Box<dyn Fn() -> AnyView>>,
 }
 
 const NAV_LINKS: [NavLink; 4] = [
     NavLink {
         label: "Home",
         path: "/",
+        icon: None,
     },
     NavLink {
         label: "Projects",
         path: "/projects",
+        icon: None,
     },
     NavLink {
         label: "About",
         path: "/about",
+        icon: None,
     },
     NavLink {
         label: "Blog",
         path: "https://blog.lanesawyer.dev",
+        icon: None,
     },
 ];
 
-const SOCIAL_LINKS: [NavLink; 4] = [
-    NavLink {
-        label: "LinkedIn",
-        path: "https://www.linkedin.com/in/lanesawyer/",
-    },
-    NavLink {
-        label: "Mastodon",
-        path: "https://mastodon.social/@lanesawyer",
-    },
-    NavLink {
-        label: "Storygraph",
-        path: "https://app.thestorygraph.com/profile/vari",
-    },
-    NavLink {
-        label: "GitHub",
-        path: "https://github.com/lanesawyer",
-    },
-];
+fn social_links() -> Vec<NavLink> {
+    vec![
+        NavLink {
+            label: "LinkedIn",
+            path: "https://www.linkedin.com/in/lanesawyer/",
+            icon: Some(Box::new(|| view! { <LinkedIn /> }.into_any())),
+        },
+        NavLink {
+            label: "Mastodon",
+            path: "https://mastodon.social/@lanesawyer",
+            icon: Some(Box::new(|| view! { <Mastodon /> }.into_any())),
+        },
+        NavLink {
+            label: "Storygraph",
+            path: "https://app.thestorygraph.com/profile/vari",
+            icon: Some(Box::new(|| view! { <Storygraph /> }.into_any())),
+        },
+        NavLink {
+            label: "GitHub",
+            path: "https://github.com/lanesawyer",
+            icon: Some(Box::new(|| view! { <GitHub /> }.into_any())),
+        },
+    ]
+}
 
 #[component]
 pub fn Header() -> impl IntoView {
@@ -96,12 +111,12 @@ pub fn Header() -> impl IntoView {
                         .collect::<Vec<_>>()}
                 </ul>
                 <ul class="nav-item right">
-                    {SOCIAL_LINKS
+                    {social_links()
                         .iter()
                         .map(|link| {
                             view! {
                                 <li>
-                                    <a href=link.path>{link.label}</a>
+                                    <a href=link.path target="_blank" title=link.label aria-label=link.label>{link.icon.as_ref().map(|icon| icon())}</a>
                                 </li>
                             }
                         })

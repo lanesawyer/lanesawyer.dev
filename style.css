@@ -58,6 +58,7 @@
       margin: auto;
       padding: 1.5rem;
       max-width: 60ch;
+      min-height: 80vh;
   }
 
   h1 {
@@ -179,3 +180,17 @@
       fill: #fff7d6;
       fill: var(--tertiary, #fff7d6);
   }
+
+footer {
+    background-color: var(--surface2);
+    min-height: 10vh;
+}
+
+footer nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    padding: 1.5rem;
+    max-width: 120ch;
+}

@@ -1,0 +1,54 @@
+:root {
+    /* Spacing */
+    --spacing-sm: 2px;
+    --spacing-md: 4px;
+    --spacing-lg: 8px;
+    --spacing-xl: 16px;
+
+    /* Fonts */
+    --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --font-mono: 'Courier New', Courier, monospace;
+    --base-font-size: 1.125rem;
+    --heading-font-size: 2.5rem;
+    --base-font-weight: 400;
+    --heading-font-weight: 700;
+}
+
+/* Color Themes */
+:root[color-mode="light"] {
+    --surface1: #e6e6e6;
+    --surface2: #f2f2f2;
+    --surface3: #ffffff; /* not currently used */
+    --element1: #111111;
+    --element2: #222222;
+    --element3: #333333; /* not currently used */
+    --elementInverse: #eee; /* not currently used */
+    --primary: #01408e; /* not currently used */
+    --secondary: #3c5d5c; /* not currently used */
+    --tertiary: #fff7d6;
+
+    --accent: 124, 58, 237;
+    --accent-gradient: linear-gradient(45deg,
+            rgb(var(--accent)),
+            #da62c4 30%,
+            black 60%);
+}
+
+:root[color-mode="dark"] {
+    --surface1: #262626;
+    --surface2: #333333;
+    --surface3: #404040;
+    --element1: #eeeeee;
+    --element2: #dddddd;
+    --element3: #cccccc;
+    --elementInverse: #111;
+    --primary: #8fceff;
+    --secondary: #72faca;
+    --tertiary: #eee8a9;
+
+    --accent: 124, 58, 237;
+    --accent-gradient: linear-gradient(45deg,
+            rgb(var(--accent)),
+            #da62c4 30%,
+            white 60%);
+}

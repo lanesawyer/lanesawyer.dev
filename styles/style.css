@@ -1,0 +1,165 @@
+/* Any element with the class "light--hidden" will be hidden when the site is set to Light Mode */
+:root[color-mode="light"] .light--hidden {
+    display: none;
+}
+
+/* Any element with the class "dark--hidden" will be hidden when the site is set to Dark Mode */
+:root[color-mode="dark"] .dark--hidden {
+    display: none;
+}
+
+/* -------------- BASE STYLES -------------- */
+
+html {
+    font-family: var(--font-sans);
+    background-color: var(--surface1);
+    color: var(--element1);
+}
+
+/* Clear out browser defaults */
+body {
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    margin: auto;
+    max-width: 120ch;
+    min-height: 80vh;
+}
+
+h1 {
+    font-size: var(--heading-font-size);
+    font-weight: var(--heading-font-weight);
+}
+
+/* TODO: Review, no code tags on the site yet */
+code {
+    font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
+        DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
+}
+
+
+  /* BELOW IS HEADER */
+
+header {
+    position: sticky;
+    top: 0;
+    /* From https://css.glass */
+    background: rgba(255, 255, 255, 0.17);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(6.8px);
+    -webkit-backdrop-filter: blur(6.8px);
+
+    nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: auto;
+        padding: 1.5rem;
+        max-width: 120ch;
+
+        ul {
+            margin: 0;
+        }
+
+        li {
+            display: inline;
+            margin: var(--spacing-md);
+            padding: var(--spacing-md);
+        }
+    }
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+  nav a {
+      color: var(--element1);
+      text-decoration: none;
+  }
+
+  nav a:hover,
+  a.active {
+      position: relative;
+      text-decoration: var(--accent-gradient) wavy underline;
+  }
+
+  nav a:hover::before,
+  a.active::before {
+      content: "";
+      position: absolute;
+      top: 100%;
+      width: 100%;
+      left: 0;
+      height: 5px;
+      border-radius: 2px;
+      background: var(--accent-gradient);
+      /* TODO: ANIMATE THE UNDERLINE */
+  }
+
+  .title {
+      font-size: 1.5em;
+      margin-right: calc(var(--spacing-xl) * 4);
+  }
+
+  .nav-item {
+      flex: 1;
+  }
+
+  .center {
+      text-align: center;
+  }
+
+  .right {
+      text-align: right;
+  }
+
+  .color-mode__btn {
+      font-family: var(--sans);
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1;
+      color: #111111;
+      color: var(--element1, #111111);
+      cursor: pointer;
+      background: none;
+      border: none;
+      border-radius: var(--radius);
+      box-shadow: var(--box-shadow);
+  }
+
+  .color-mode__btn svg {
+      width: 30px;
+      height: 30px;
+      margin-left: 7px;
+      fill: none;
+      stroke: #222222;
+      stroke: var(--element2, #222222);
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.5px;
+  }
+
+  .color-mode__btn:hover svg,
+  .color-mode__btn:focus svg,
+  .color-mode__btn:focus {
+      outline: none;
+      fill: #fff7d6;
+      fill: var(--tertiary, #fff7d6);
+  }
+
+footer {
+    background-color: var(--surface2);
+    min-height: 10vh;
+}
+
+footer nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    max-width: 120ch;
+}

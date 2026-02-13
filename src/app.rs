@@ -11,17 +11,19 @@ use crate::{
 
 #[component]
 pub fn App() -> impl IntoView {
+    let is_footer_visible = RwSignal::new(false);
+
     view! {
         <Router>
-            <Header />
+            <Header is_footer_visible=is_footer_visible />
             <main>
-                <Routes fallback=NotFound >
+                <Routes fallback=NotFound>
                     <Route path=path!("/") view=Home />
                     <Route path=path!("/projects") view=Projects />
                     <Route path=path!("/about") view=About />
                 </Routes>
             </main>
-            <Footer />
+            <Footer is_visible=is_footer_visible />
         </Router>
     }
 }

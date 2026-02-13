@@ -7,11 +7,12 @@ pub fn CssVarChanger() -> impl IntoView {
     let (spacing_md, set_spacing_md) = use_css_var("--spacing-md");
     let (spacing_lg, set_spacing_lg) = use_css_var("--spacing-lg");
     let (spacing_xl, set_spacing_xl) = use_css_var("--spacing-xl");
+    let (spacing_xxl, set_spacing_xxl) = use_css_var("--spacing-xxl");
 
     view! {
         // TODO: Styling
         <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem;">
-            <h3>"CSS Variables"</h3>
+            <h3>"CSS Variable Playground"</h3>
             <label>
                 "Spacing (small)"
                 <input
@@ -66,6 +67,20 @@ pub fn CssVarChanger() -> impl IntoView {
                         set_spacing_xl.set(ev.target().value() + "px");
                     }
                     prop:value=move || { spacing_xl.get().trim_end_matches("px").to_string() }
+                />
+            </label>
+            <label>
+                "Spacing (extra extralarge)"
+                <input
+                    type="range"
+                    id="spacing_xxl"
+                    name="spacing_xxl"
+                    min="0"
+                    max="64"
+                    on:input:target=move |ev| {
+                        set_spacing_xxl.set(ev.target().value() + "px");
+                    }
+                    prop:value=move || { spacing_xxl.get().trim_end_matches("px").to_string() }
                 />
             </label>
         </div>

@@ -1,9 +1,11 @@
 :root {
     /* Spacing */
-    --spacing-sm: 2px;
-    --spacing-md: 4px;
-    --spacing-lg: 8px;
-    --spacing-xl: 16px;
+    --spacing-xs: 2px;
+    --spacing-sm: 4px;
+    --spacing-md: 8px;
+    --spacing-lg: 16px;
+    --spacing-xl: 32px;
+    --spacing-xxl: 64px;
 
     /* Fonts */
     --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;

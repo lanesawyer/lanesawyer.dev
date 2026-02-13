@@ -4,13 +4,20 @@ use leptos_use::{storage::use_local_storage, use_document, use_media_query};
 use crate::config::{NAV_LINKS, social_links};
 
 #[component]
-pub fn Header() -> impl IntoView {
+pub fn Header(is_footer_visible: RwSignal<bool>) -> impl IntoView {
     // Initialize color mode on mount
     let (color_mode, set_color_mode, _) =
         use_local_storage::<String, FromToStringCodec>("color-mode");
 
     let is_light_preferred: Signal<bool> = use_media_query("(prefers-color-scheme: light)");
     let document = use_document();
+
+    // Create a derived signal to ensure reactivity
+    let should_hide = move || {
+        let visible = is_footer_visible.get();
+        leptos::logging::log!("Header checking footer visibility: {}", visible);
+        visible
+    };
 
     Effect::new({
         // Need to clone before moving into the closure
@@ -39,7 +46,7 @@ pub fn Header() -> impl IntoView {
     };
 
     view! {
-        <header>
+        <header class:hidden=should_hide>
             <nav>
                 <span class="title">/Lane</span>
                 <ul class="nav-item">
@@ -60,7 +67,14 @@ pub fn Header() -> impl IntoView {
                         .map(|link| {
                             view! {
                                 <li>
-                                    <a href=link.path target="_blank" title=link.label aria-label=link.label>{link.icon.as_ref().map(|icon| icon())}</a>
+                                    <a
+                                        href=link.path
+                                        target="_blank"
+                                        title=link.label
+                                        aria-label=link.label
+                                    >
+                                        {link.icon.as_ref().map(|icon| icon())}
+                                    </a>
                                 </li>
                             }
                         })

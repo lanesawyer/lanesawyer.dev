@@ -17,6 +17,20 @@ jobs:
           cache: true
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
+      # The Fly image installs only production dependencies, so boot the build
+      # the same way to catch packages the bundle expects at runtime.
+      - name: Smoke test with production dependencies
+        run: |
+          pnpm prune --prod
+          TURSO_DATABASE_URL=file:./smoke.db PORT=4321 HOST=127.0.0.1 node ./dist/server/entry.mjs > server.log 2>&1 &
+          for i in $(seq 1 30); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 60 http://127.0.0.1:4321/ || true)
+            if [ "$code" = "200" ]; then echo "GET / -> 200"; exit 0; fi
+            sleep 2
+          done
+          echo "GET / -> $code"
+          cat server.log
+          exit 1
 
   typecheck:
     name: Typecheck

@@ -38,12 +38,10 @@ const formattedDate = date
 <article class="post-card">
 	<a href={href} class="card-link">
 		{
-			featuredImage ? (
+			featuredImage && (
 				<div class="card-image" {...edit?.featured_image}>
 					<Image image={featuredImage} />
 				</div>
-			) : (
-				<div class="card-placeholder" />
 			)
 		}
 		<div class="card-body">
@@ -137,13 +135,6 @@ const formattedDate = date
 
 	.card-link:hover .card-image img {
 		transform: scale(1.03);
-	}
-
-	.card-placeholder {
-		aspect-ratio: 16 / 10;
-		border-radius: var(--radius-lg);
-		background: var(--color-surface);
-		margin-bottom: var(--spacing-4);
 	}
 
 	.card-body {

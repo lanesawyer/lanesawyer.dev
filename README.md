@@ -1,54 +1,22 @@
-# Astro Starter Kit: Basics
+# lanesawyer.dev
 
-```
-npm create astro@latest -- --template basics
-```
+Lane Sawyer's site and blog, built on [EmDash](https://docs.emdashcms.com/) (Astro) and hosted on Fly.io.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+## Running locally
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-![basics](https://user-images.githubusercontent.com/4677417/186188965-73453154-fdec-4d6b-9c34-cb35c248ae5b.png)
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── components/
-│   │   └── Card.astro
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
+```bash
+pnpm install
+pnpm dev
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+Open http://localhost:4321/_emdash/admin and complete the setup wizard. Local content lives in `data.db` and `uploads/` (both gitignored). The scaffolder writes `EMDASH_ENCRYPTION_KEY` to `.env`; generate a new one with `npx emdash secrets generate`.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Deployment
 
-Any static assets, like images, can be placed in the `public/` directory.
+Fly.io runs a single machine with SQLite and media on the `emdash_data` volume mounted at `/data`. EmDash serializes its database and storage config at build time, so the Dockerfile sets `DATABASE_PATH` and `UPLOADS_DIR` in the build stage. Runtime secrets (`EMDASH_ENCRYPTION_KEY`) go in `fly secrets`.
 
-## 🧞 Commands
+## AI tooling
 
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:3000`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- `AGENTS.md` (loaded by `CLAUDE.md`) describes the template and its rules.
+- `.agents/skills/` holds EmDash's agent skills (`.claude/skills` links to it). Update with `npx skills update`.
+- `.mcp.json` connects the EmDash docs MCP server.

@@ -6,6 +6,8 @@ primary_region = 'sjc'
 [env]
 PORT = "8080"
 HOST = "0.0.0.0"
+# Passkeys are bound to this domain; switching to lanesawyer.dev means registering a new passkey.
+EMDASH_SITE_URL = "https://lanesawyer-dev.fly.dev"
 
 [http_service]
 internal_port = 8080

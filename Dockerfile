@@ -6,8 +6,8 @@ RUN corepack enable
 WORKDIR /app
 
 FROM base AS build
-# Baked into the bundle at build time; /data is the Fly volume.
-ENV UPLOADS_DIR=/data/uploads
+# Selects S3 (Tigris) media storage; EmDash bakes this choice in at build time.
+ENV MEDIA_STORAGE=s3
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 COPY . .

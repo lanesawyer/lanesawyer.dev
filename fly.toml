@@ -7,11 +7,6 @@ primary_region = 'sjc'
 PORT = "8080"
 HOST = "0.0.0.0"
 
-# Media uploads live on this volume, so the app must stay at one machine.
-[mounts]
-source = 'emdash_data'
-destination = '/data'
-
 [http_service]
 internal_port = 8080
 force_https = true

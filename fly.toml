@@ -7,7 +7,7 @@ primary_region = 'sjc'
 PORT = "8080"
 HOST = "0.0.0.0"
 
-# SQLite and media live on this volume, so the app must stay at one machine.
+# Media uploads live on this volume, so the app must stay at one machine.
 [mounts]
 source = 'emdash_data'
 destination = '/data'

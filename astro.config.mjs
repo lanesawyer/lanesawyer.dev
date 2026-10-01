@@ -2,7 +2,8 @@ import node from "@astrojs/node";
 import react from "@astrojs/react";
 import { defineConfig, fontProviders } from "astro/config";
 import emdash, { local } from "emdash/astro";
-import { sqlite } from "emdash/db";
+import { libsql } from "emdash/db";
+import { fileURLToPath } from "node:url";
 
 export default defineConfig({
 	output: "server",
@@ -16,8 +17,12 @@ export default defineConfig({
 	integrations: [
 		react(),
 		emdash({
+			// The url here only feeds the `emdash migrate` CLI; the server connects via turso.ts.
+			database: {
+				...libsql({ url: process.env.TURSO_DATABASE_URL ?? "file:./data.db" }),
+				entrypoint: fileURLToPath(new URL("./src/db/turso.ts", import.meta.url)),
+			},
 			// Read at build time: EmDash serializes this config into the server bundle.
-			database: sqlite({ url: `file:${process.env.DATABASE_PATH ?? "./data.db"}` }),
 			storage: local({
 				directory: process.env.UPLOADS_DIR ?? "./uploads",
 				baseUrl: "/_emdash/api/media/file",

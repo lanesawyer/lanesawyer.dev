@@ -7,7 +7,6 @@ WORKDIR /app
 
 FROM base AS build
 # Baked into the bundle at build time; /data is the Fly volume.
-ENV DATABASE_PATH=/data/emdash.db
 ENV UPLOADS_DIR=/data/uploads
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile

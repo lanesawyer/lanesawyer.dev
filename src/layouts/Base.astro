@@ -202,12 +202,6 @@ const isLoggedIn = !!Astro.locals.user;
 							}
 						</ul>
 					</div>
-					<div class="footer-nav">
-						<h2 class="footer-heading">Connect</h2>
-						<ul class="footer-links">
-							<li><a href="/rss.xml">RSS Feed</a></li>
-						</ul>
-					</div>
 					<div class="footer-widgets-section">
 						<WidgetArea name="footer" />
 					</div>
@@ -718,11 +712,14 @@ const isLoggedIn = !!Astro.locals.user;
 				color: var(--color-text);
 			}
 
+			/* Unwrap so each widget becomes its own footer-grid column */
+			.footer-widgets-section,
 			.footer-widgets-section :global(.widget-area) {
-				display: block;
+				display: contents;
 			}
 
 			.footer-widgets-section :global(.widget) {
+				min-width: 0;
 				color: var(--color-text-secondary);
 			}
 
@@ -739,6 +736,26 @@ const isLoggedIn = !!Astro.locals.user;
 				color: var(--color-text-secondary);
 				font-size: var(--font-size-sm);
 				line-height: var(--leading-relaxed);
+			}
+
+			.footer-widgets-section :global(.widget__menu ul) {
+				list-style: none;
+				padding: 0;
+			}
+
+			.footer-widgets-section :global(.widget__menu li) {
+				margin-bottom: var(--spacing-2);
+			}
+
+			.footer-widgets-section :global(.widget__menu a) {
+				color: var(--color-text-secondary);
+				text-decoration: none;
+				font-size: var(--font-size-sm);
+				transition: color var(--transition-fast);
+			}
+
+			.footer-widgets-section :global(.widget__menu a:hover) {
+				color: var(--color-text);
 			}
 
 			.footer-bottom {

@@ -105,9 +105,9 @@ function formatDate(date: Date | null | undefined) {
 													<>
 														{index > 0 && <span class="byline-sep">,</span>}
 														<span class="featured-byline">
-															{credit.byline.avatarMediaId && (
+															{credit.byline.avatarStorageKey && (
 																<img
-																	src={`/_emdash/api/media/file/${credit.byline.avatarMediaId}`}
+																	src={`/_emdash/api/media/file/${credit.byline.avatarStorageKey}`}
 																	alt={credit.byline.displayName}
 																	class="featured-byline-avatar"
 																/>

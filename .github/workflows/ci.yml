@@ -12,25 +12,21 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/setup@v1
+      - uses: actions/cache@v6
         with:
-          cache: true
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
-      # The Fly image installs only production dependencies, so boot the build
-      # the same way to catch packages the bundle expects at runtime.
-      - name: Smoke test with production dependencies
-        run: |
-          pnpm prune --prod
-          TURSO_DATABASE_URL=file:./smoke.db PORT=4321 HOST=127.0.0.1 node ./dist/server/entry.mjs > server.log 2>&1 &
-          for i in $(seq 1 30); do
-            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 60 http://127.0.0.1:4321/ || true)
-            if [ "$code" = "200" ]; then echo "GET / -> 200"; exit 0; fi
-            sleep 2
-          done
-          echo "GET / -> $code"
-          cat server.log
-          exit 1
+          path: ~/.cache/mise/downloads-cas
+          key: mise-downloads-${{ runner.os }}-${{ hashFiles('mise.lock') }}
+      - uses: jdx/mise-action@v5
+        with:
+          cache: false
+      - uses: actions/cache@v6
+        with:
+          path: ~/.local/share/pnpm/store
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: pnpm-store-${{ runner.os }}-
+      - run: mise run install
+      - run: mise run build
+      - run: mise run smoke
 
   typecheck:
     name: Typecheck
@@ -38,8 +34,17 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/setup@v1
+      - uses: actions/cache@v6
         with:
-          cache: true
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm typecheck
+          path: ~/.cache/mise/downloads-cas
+          key: mise-downloads-${{ runner.os }}-${{ hashFiles('mise.lock') }}
+      - uses: jdx/mise-action@v5
+        with:
+          cache: false
+      - uses: actions/cache@v6
+        with:
+          path: ~/.local/share/pnpm/store
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: pnpm-store-${{ runner.os }}-
+      - run: mise run install
+      - run: mise run typecheck

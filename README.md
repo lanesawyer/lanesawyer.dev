@@ -4,10 +4,15 @@ Lane Sawyer's site and blog, built on [EmDash](https://docs.emdashcms.com/) (Ast
 
 ## Running locally
 
+Node and pnpm versions are pinned in `mise.toml`.
+
 ```bash
+mise install
 pnpm install
 pnpm dev
 ```
+
+CI runs the `install`, `build`, `typecheck`, and `smoke` tasks from `mise.toml`; run them locally with `mise run <task>`. After changing tool versions, refresh the lockfile with `mise lock --platform linux-x64,linux-arm64,macos-arm64`.
 
 Open http://localhost:4321/_emdash/admin and complete the setup wizard. Local content lives in `data.db` and `uploads/` (both gitignored). The scaffolder writes `EMDASH_ENCRYPTION_KEY` to `.env`; generate a new one with `npx emdash secrets generate`.
 

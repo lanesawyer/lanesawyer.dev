@@ -1,0 +1,39 @@
+[tools]
+node = "26.12.0"
+pnpm = "12.14.0"
+
+[tasks.install]
+description = "Install dependencies from the lockfile"
+run = "pnpm install --frozen-lockfile"
+
+[tasks.build]
+description = "Build the site"
+run = "pnpm build"
+
+[tasks.typecheck]
+description = "Typecheck with astro check"
+run = "pnpm typecheck"
+
+# The Fly image installs only production dependencies, so boot the build the
+# same way to catch packages the bundle expects at runtime. Runs from a scratch
+# copy so the local node_modules is untouched, on a port that won't hit a
+# running dev server.
+[tasks.smoke]
+description = "Boot the build with production deps and check GET / returns 200"
+run = '''
+dir=$(mktemp -d)
+trap 'kill $pid 2>/dev/null; rm -rf "$dir"' EXIT
+cp -r package.json pnpm-lock.yaml pnpm-workspace.yaml dist "$dir"
+cd "$dir"
+pnpm install --frozen-lockfile --prod
+TURSO_DATABASE_URL=file:./smoke.db PORT=4399 HOST=127.0.0.1 node ./dist/server/entry.mjs > server.log 2>&1 &
+pid=$!
+for i in $(seq 1 30); do
+  code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 60 http://127.0.0.1:4399/ || true)
+  if [ "$code" = "200" ]; then echo "GET / -> 200"; exit 0; fi
+  sleep 2
+done
+echo "GET / -> $code"
+cat server.log
+exit 1
+'''
